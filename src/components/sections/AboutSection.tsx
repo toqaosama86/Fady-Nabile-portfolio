@@ -1,4 +1,5 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
+import editorPortrait from "@/assets/editor-portrait.jpg";
 
 export const AboutSection = () => {
   return (
@@ -17,23 +18,31 @@ export const AboutSection = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  I'm Marcus Reed — a video editor with 8+ years of experience turning ideas into 
+                  I'm Marcus Reed — a video editor with 8+ years of experience turning ideas into
                   visual stories that move people. Based in Los Angeles, I've worked with global brands,
                   agencies, and independent creators across 15+ countries.
                 </p>
                 <p>
-                  My editing style blends cinematic pacing with modern rhythm. I specialize in 
-                  commercials, brand campaigns, social content, and documentary storytelling — always 
+                  My editing style blends cinematic pacing with modern rhythm. I specialize in
+                  commercials, brand campaigns, social content, and documentary storytelling — always
                   focused on emotion, flow, and impact.
                 </p>
                 <p>
-                  Every project is a collaboration. I bring technical precision and creative instinct 
+                  Every project is a collaboration. I bring technical precision and creative instinct
                   to every timeline, ensuring your story resonates with its audience.
                 </p>
               </div>
             </div>
             <div className="relative">
-              <div className="aspect-[4/5] rounded-lg bg-gradient-to-br from-secondary to-muted overflow-hidden relative">
+              <div className="aspect-[4/5] rounded-lg overflow-hidden relative">
+                <img
+                  src={editorPortrait}
+                  alt="Marcus Reed — Video Editor in studio"
+                  loading="lazy"
+                  width={800}
+                  height={1000}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="glass-card rounded-lg p-4">
@@ -42,7 +51,6 @@ export const AboutSection = () => {
                   </div>
                 </div>
               </div>
-              {/* Decorative glow */}
               <div className="absolute -inset-4 bg-primary/5 rounded-2xl -z-10 blur-2xl" />
             </div>
           </div>
