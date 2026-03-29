@@ -1,16 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Navbar } from "@/components/Navbar";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { StatsSection } from "@/components/sections/StatsSection";
+import { ShowreelSection } from "@/components/sections/ShowreelSection";
+import { ProjectsSection } from "@/components/sections/ProjectsSection";
+import { BrandsSection } from "@/components/sections/BrandsSection";
+import { ServicesSection } from "@/components/sections/ServicesSection";
+import { ExperienceSection } from "@/components/sections/ExperienceSection";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
+import { ProcessSection } from "@/components/sections/ProcessSection";
+import { ToolsSection } from "@/components/sections/ToolsSection";
+import { ContactSection } from "@/components/sections/ContactSection";
+import { FooterSection } from "@/components/sections/FooterSection";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <main className="min-h-screen bg-background">
+      <Navbar />
+      <HeroSection />
+      <AboutSection />
+      <StatsSection />
+      <ShowreelSection />
+      <ProjectsSection />
+      <BrandsSection />
+      <ServicesSection />
+      <ExperienceSection />
+      <TestimonialsSection />
+      <ProcessSection />
+      <ToolsSection />
+      <ContactSection />
+      <FooterSection />
+    </main>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
