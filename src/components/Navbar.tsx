@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -46,6 +47,13 @@ export const Navbar = () => {
           >
             Hire Me
           </a>
+          <Link
+            to="/admin"
+            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300 p-2"
+            title="Admin Dashboard"
+          >
+            <Settings size={18} />
+          </Link>
         </div>
 
         <button
@@ -77,6 +85,14 @@ export const Navbar = () => {
             >
               Hire Me
             </a>
+            <Link
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="text-sm font-heading font-semibold px-5 py-2.5 bg-secondary text-foreground rounded-md text-center hover:bg-secondary/90 transition-all flex items-center justify-center gap-2"
+            >
+              <Settings size={16} />
+              Admin
+            </Link>
           </div>
         </div>
       )}

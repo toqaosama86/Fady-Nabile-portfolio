@@ -1,28 +1,23 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Star, Quote } from "lucide-react";
-
-const testimonials = [
-  {
-    name: "Sarah Mitchell",
-    role: "Marketing Director",
-    company: "BMW Middle East",
-    text: "Marcus delivered beyond expectations. His editing elevated our campaign to a cinematic level that our audience loved. The attention to pacing and storytelling was remarkable.",
-  },
-  {
-    name: "Omar Al-Rashid",
-    role: "Creative Producer",
-    company: "Artwave Agency",
-    text: "One of the most talented editors I've worked with. Marcus understands the brief instantly and delivers polished, on-brand content every single time.",
-  },
-  {
-    name: "Lisa Chen",
-    role: "Content Lead",
-    company: "Samsung Gulf",
-    text: "Working with Marcus on our product launch was a game-changer. Fast turnaround, incredible quality, and he brought creative ideas we hadn't even considered.",
-  },
-];
+import { useTestimonials } from "@/hooks/useDatabase";
 
 export const TestimonialsSection = () => {
+  const { data: testimonials = [], isLoading } = useTestimonials();
+  
+  // Sort by display order
+  const sorted = [...testimonials].sort((a, b) => a.display_order - b.display_order);
+
+  if (isLoading) {
+    return (
+      <section className="section-padding">
+        <div className="max-w-6xl mx-auto text-center">
+          <p className="text-muted-foreground">Loading testimonials...</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="section-padding">
       <div className="max-w-6xl mx-auto">
@@ -36,27 +31,46 @@ export const TestimonialsSection = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <AnimatedSection key={t.name} delay={i * 120}>
-                <div className="glass-card rounded-xl p-6 h-full flex flex-col hover:border-primary/20 transition-all duration-300">
-                  <Quote size={24} className="text-primary/30 mb-4" />
-                  <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-6">
-                    "{t.text}"
-                  </p>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(5)].map((_, j) => (
-                      <Star key={j} size={12} className="fill-primary text-primary" />
-                    ))}
+          {sorted.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No testimonials yet.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-6">
+              {sorted.map((testimonial, i) => (
+                <AnimatedSection key={testimonial.id} delay={i * 120}>
+                  <div className="glass-card rounded-xl p-6 h-full flex flex-col hover:border-primary/20 transition-all duration-300">
+                    <Quote size={24} className="text-primary/30 mb-4" />
+                    <p className="text-muted-foreground text-sm leading-relaxed flex-1 mb-6">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="flex items-center gap-1 mb-3">
+                      {[...Array(testimonial.rating)].map((_, j) => (
+                        <Star key={j} size={12} className="fill-primary text-primary" />
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {testimonial.author_image_url && (
+                        <img 
+                          src={testimonial.author_image_url}
+                          alt={testimonial.author_name}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      )}
+                      <div>
+                        <p className="font-heading font-semibold text-foreground text-sm">
+                          {testimonial.author_name}
+                        </p>
+                        {testimonial.author_title && (
+                          <p className="text-xs text-muted-foreground">{testimonial.author_title}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-heading font-semibold text-foreground text-sm">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}, {t.company}</p>
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          )}
         </AnimatedSection>
       </div>
     </section>
