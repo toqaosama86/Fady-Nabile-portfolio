@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,28 +10,33 @@ export const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Memoize submit handler to prevent re-renders
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
 
     try {
       await signIn(email, password);
-      navigate('/admin');
-    } catch (error: any) {
-      console.error('Login error:', error);
+      // Successfully logged in - context state updated immediately
+      navigate('/admin', { replace: true });
+    } catch (err: any) {
+      const errorMsg = err.message || 'Invalid email or password';
+      setError(errorMsg);
       toast({
         title: 'Login Failed',
-        description: error.message || 'Invalid email or password',
+        description: errorMsg,
         variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [email, password, signIn, navigate, toast]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -54,6 +59,7 @@ export const AdminLogin: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
                 required
+                autoFocus
               />
             </div>
             <div className="space-y-2">
@@ -70,7 +76,16 @@ export const AdminLogin: React.FC = () => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            {error && (
+              <div className="text-sm text-destructive bg-destructive/10 p-2 rounded">
+                {error}
+              </div>
+            )}
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
+            >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>

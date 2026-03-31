@@ -13,5 +13,21 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
-  }
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+  },
+  db: {
+    schema: 'public',
+  },
+  global: {
+    headers: {
+      'x-my-custom-header': 'my-app',
+    },
+  },
+  // Timeout configuration for faster failures
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
 });

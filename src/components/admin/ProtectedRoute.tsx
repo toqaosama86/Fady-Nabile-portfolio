@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { AdminLoadingSkeleton } from './AdminLoadingSkeleton';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -9,18 +10,17 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { session, loading, isAdmin } = useAuth();
 
+  // Show loading skeleton during initial auth check
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    );
+    return <AdminLoadingSkeleton />;
   }
 
+  // Not authenticated - redirect to login
   if (!session) {
     return <Navigate to="/admin/login" replace />;
   }
 
+  // Not admin - show access denied
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -32,5 +32,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
+  // Admin - render children
   return <>{children}</>;
 };
