@@ -1,7 +1,7 @@
 import React from 'react';
-import { useProjects, useBrands, useTestimonials, useServices, useExperience, useTools } from '@/hooks/useDatabase';
+import { useProjects, useBrands, useTestimonials, useServices, useExperience, useTools, useContactMessages } from '@/hooks/useDatabase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Briefcase, Users, MessageSquare, Wrench, Building2, Hammer } from 'lucide-react';
+import { Briefcase, Users, MessageSquare, Wrench, Building2, Hammer, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const AdminDashboard: React.FC = () => {
@@ -11,50 +11,16 @@ export const AdminDashboard: React.FC = () => {
   const { data: services = [] } = useServices();
   const { data: experience = [] } = useExperience();
   const { data: tools = [] } = useTools();
+  const { data: messages = [] } = useContactMessages();
 
   const stats = [
-    {
-      label: 'Projects',
-      value: projects.length,
-      icon: Briefcase,
-      color: 'text-blue-600',
-      link: '/admin/projects',
-    },
-    {
-      label: 'Brands',
-      value: brands.length,
-      icon: Users,
-      color: 'text-green-600',
-      link: '/admin/brands',
-    },
-    {
-      label: 'Testimonials',
-      value: testimonials.length,
-      icon: MessageSquare,
-      color: 'text-purple-600',
-      link: '/admin/testimonials',
-    },
-    {
-      label: 'Services',
-      value: services.length,
-      icon: Wrench,
-      color: 'text-orange-600',
-      link: '/admin/services',
-    },
-    {
-      label: 'Experience',
-      value: experience.length,
-      icon: Building2,
-      color: 'text-red-600',
-      link: '/admin/experience',
-    },
-    {
-      label: 'Tools',
-      value: tools.length,
-      icon: Hammer,
-      color: 'text-indigo-600',
-      link: '/admin/tools',
-    },
+    { label: 'Projects', value: projects.length, icon: Briefcase, color: 'text-blue-500', link: '/admin/projects' },
+    { label: 'Brands', value: brands.length, icon: Users, color: 'text-green-500', link: '/admin/brands' },
+    { label: 'Testimonials', value: testimonials.length, icon: MessageSquare, color: 'text-purple-500', link: '/admin/testimonials' },
+    { label: 'Services', value: services.length, icon: Wrench, color: 'text-orange-500', link: '/admin/services' },
+    { label: 'Experience', value: experience.length, icon: Building2, color: 'text-red-500', link: '/admin/experience' },
+    { label: 'Tools', value: tools.length, icon: Hammer, color: 'text-indigo-500', link: '/admin/tools' },
+    { label: 'Messages', value: messages.length, icon: Mail, color: 'text-cyan-500', link: '/admin/messages' },
   ];
 
   return (
@@ -64,8 +30,7 @@ export const AdminDashboard: React.FC = () => {
         <p className="text-muted-foreground mt-2">Manage all your portfolio content in one place</p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -85,67 +50,35 @@ export const AdminDashboard: React.FC = () => {
         })}
       </div>
 
-      {/* Quick Links */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-          <CardDescription>Start by managing your portfolio content</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 border border-border rounded-lg hover:bg-accent transition-colors">
-              <h3 className="font-semibold mb-2">📝 Add Your First Project</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Showcase your best work by adding projects with images and descriptions.
-              </p>
-              <Link to="/admin/projects" className="text-primary hover:underline text-sm font-medium">
-                Go to Projects →
-              </Link>
-            </div>
-            <div className="p-4 border border-border rounded-lg hover:bg-accent transition-colors">
-              <h3 className="font-semibold mb-2">⚙️ Configure Settings</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Set up your site title, contact information, and social links.
-              </p>
-              <Link to="/admin/settings" className="text-primary hover:underline text-sm font-medium">
-                Go to Settings →
-              </Link>
-            </div>
-            <div className="p-4 border border-border rounded-lg hover:bg-accent transition-colors">
-              <h3 className="font-semibold mb-2">💼 Add Your Experience</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Share your professional background and work history.
-              </p>
-              <Link to="/admin/experience" className="text-primary hover:underline text-sm font-medium">
-                Go to Experience →
-              </Link>
-            </div>
-            <div className="p-4 border border-border rounded-lg hover:bg-accent transition-colors">
-              <h3 className="font-semibold mb-2">🛠️ List Your Skills</h3>
-              <p className="text-sm text-muted-foreground mb-3">
-                Add tools, technologies, and skills you're proficient in.
-              </p>
-              <Link to="/admin/tools" className="text-primary hover:underline text-sm font-medium">
-                Go to Tools →
-              </Link>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">📝 Quick Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link to="/admin/projects" className="block p-3 border border-border rounded-lg hover:bg-accent transition-colors">
+              <span className="font-medium">Add Project</span>
+              <span className="text-sm text-muted-foreground block">Showcase your best work</span>
+            </Link>
+            <Link to="/admin/settings" className="block p-3 border border-border rounded-lg hover:bg-accent transition-colors">
+              <span className="font-medium">Edit Site Settings</span>
+              <span className="text-sm text-muted-foreground block">Update titles, images, social links</span>
+            </Link>
+          </CardContent>
+        </Card>
 
-      {/* Help Card */}
-      <Card className="bg-blue-50 border-blue-200">
-        <CardHeader>
-          <CardTitle className="text-lg">💡 Tips</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <p>• Use the <strong>Display Order</strong> field to arrange items in the order they should appear</p>
-          <p>• Mark projects as <strong>Featured</strong> to highlight them on your portfolio</p>
-          <p>• Add <strong>Skills</strong> to your experience entries for better organization</p>
-          <p>• Set <strong>Current Position</strong> for your ongoing job role in Experience</p>
-          <p>• Use the <strong>Settings</strong> section to customize your portfolio metadata</p>
-        </CardContent>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">💡 Tips</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <p>• Go to <strong>Settings</strong> to change your name, title, images, and social media links</p>
+            <p>• Use <strong>Display Order</strong> to arrange items on the portfolio</p>
+            <p>• Mark projects as <strong>Featured</strong> to highlight them</p>
+            <p>• Check <strong>Messages</strong> for contact form submissions</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
