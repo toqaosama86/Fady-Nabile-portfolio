@@ -69,16 +69,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Make the query
     checkingAdminRef.current = (async () => {
       try {
-        const { data } = await supabase
-          .from('admin_users')
-          .select('user_id')
-          .eq('user_id', userId)
-          .eq('is_active', true)
-          .maybeSingle();
+        // Use the secure is_admin function that bypasses RLS
+        const { data, error } = await supabase.rpc('is_admin', { _user_id: userId });
+        
+        if (error) {
+          console.error('Admin check error:', error);
+          return false;
+        }
         
         const isAdminUser = !!data;
         setCachedAdminStatus(userId, isAdminUser);
         return isAdminUser;
+      } catch (err) {
+        console.error('Admin verification error:', err);
+        return false;
       } finally {
         checkingAdminRef.current = null;
       }
@@ -161,18 +165,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error("Login failed");
     }
 
-    // Step 2: Verify admin access
-    const { data: adminRow, error: adminError } = await supabase
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id", authUser.id)
-      .maybeSingle();
+    // Step 2: Verify admin access using secure RPC function
+    const { data: isAdminUser, error: adminError } = await supabase.rpc('is_admin', {
+      _user_id: authUser.id
+    });
 
     if (adminError) {
+      console.error('Admin verification error:', adminError);
       throw new Error("Could not verify admin access");
     }
 
-    if (!adminRow) {
+    if (!isAdminUser) {
+      // Sign out the user since they're not an admin
+      await supabase.auth.signOut();
       throw new Error("You are not authorized to access admin");
     }
 
