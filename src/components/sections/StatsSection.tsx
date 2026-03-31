@@ -1,12 +1,6 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { useEffect, useRef, useState } from "react";
-
-const stats = [
-  { value: 8, suffix: "+", label: "Years Experience" },
-  { value: 350, suffix: "+", label: "Projects Delivered" },
-  { value: 60, suffix: "+", label: "Brands & Clients" },
-  { value: 50, suffix: "M+", label: "Views Generated" },
-];
+import { useSettingsMap } from "@/hooks/useDatabase";
 
 const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
   const [count, setCount] = useState(0);
@@ -24,12 +18,8 @@ const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
           let current = 0;
           const timer = setInterval(() => {
             current += increment;
-            if (current >= target) {
-              setCount(target);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(current));
-            }
+            if (current >= target) { setCount(target); clearInterval(timer); }
+            else { setCount(Math.floor(current)); }
           }, duration / steps);
         }
       },
@@ -39,15 +29,19 @@ const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
     return () => observer.disconnect();
   }, [target]);
 
-  return (
-    <span ref={ref}>
-      {count}
-      {suffix}
-    </span>
-  );
+  return <span ref={ref}>{count}{suffix}</span>;
 };
 
 export const StatsSection = () => {
+  const { settings } = useSettingsMap();
+
+  const stats = [
+    { value: parseInt(settings.stat_1_value || "8"), suffix: settings.stat_1_suffix || "+", label: settings.stat_1_label || "Years Experience" },
+    { value: parseInt(settings.stat_2_value || "350"), suffix: settings.stat_2_suffix || "+", label: settings.stat_2_label || "Projects Delivered" },
+    { value: parseInt(settings.stat_3_value || "60"), suffix: settings.stat_3_suffix || "+", label: settings.stat_3_label || "Brands & Clients" },
+    { value: parseInt(settings.stat_4_value || "50"), suffix: settings.stat_4_suffix || "M+", label: settings.stat_4_label || "Views Generated" },
+  ];
+
   return (
     <section className="py-16 md:py-20 border-y border-border/30">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
