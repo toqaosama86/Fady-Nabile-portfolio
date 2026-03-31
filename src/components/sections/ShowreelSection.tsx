@@ -1,9 +1,9 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Play } from "lucide-react";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useSettingsMap } from "@/hooks/useDatabase";
 
-export const ShowreelSection = () => {
+const ShowreelSectionComponent = () => {
   const [playing, setPlaying] = useState(false);
   const { settings } = useSettingsMap();
 
@@ -54,3 +54,5 @@ export const ShowreelSection = () => {
     </section>
   );
 };
+
+export const ShowreelSection = memo(ShowreelSectionComponent);

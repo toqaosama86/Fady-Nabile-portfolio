@@ -1,5 +1,6 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Briefcase } from "lucide-react";
+import { memo } from "react";
 import { useExperience } from "@/hooks/useDatabase";
 
 const fallbackExperience = [
@@ -9,7 +10,7 @@ const fallbackExperience = [
   { id: "4", role: "Junior Editor", company: "PixelCraft Media", period: "2016 — 2017", description: "Started career in post-production." },
 ];
 
-export const ExperienceSection = () => {
+const ExperienceSectionComponent = () => {
   const { data: dbExperience = [], isLoading } = useExperience();
 
   const items = dbExperience.length > 0
@@ -63,3 +64,5 @@ export const ExperienceSection = () => {
     </section>
   );
 };
+
+export const ExperienceSection = memo(ExperienceSectionComponent);

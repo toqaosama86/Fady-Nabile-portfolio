@@ -1,6 +1,7 @@
 import { useSettingsMap } from "@/hooks/useDatabase";
+import { memo } from "react";
 
-export const FooterSection = () => {
+const FooterSectionComponent = () => {
   const { settings } = useSettingsMap();
   const name = settings.editor_name || "Marcus Reed";
   const nameParts = name.split(" ");
@@ -26,3 +27,5 @@ export const FooterSection = () => {
     </footer>
   );
 };
+
+export const FooterSection = memo(FooterSectionComponent);

@@ -1,8 +1,9 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Star, Quote } from "lucide-react";
+import { memo } from "react";
 import { useTestimonials } from "@/hooks/useDatabase";
 
-export const TestimonialsSection = () => {
+const TestimonialsSectionComponent = () => {
   const { data: testimonials = [], isLoading } = useTestimonials();
   
   // Sort by display order
@@ -54,6 +55,8 @@ export const TestimonialsSection = () => {
                         <img 
                           src={testimonial.author_image_url}
                           alt={testimonial.author_name}
+                          loading="lazy"
+                          decoding="async"
                           className="w-10 h-10 rounded-full object-cover"
                         />
                       )}
@@ -76,3 +79,5 @@ export const TestimonialsSection = () => {
     </section>
   );
 };
+
+export const TestimonialsSection = memo(TestimonialsSectionComponent);

@@ -1,5 +1,6 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Film, Palette, Wand2, Smartphone, Youtube, Megaphone, Sparkles, Camera } from "lucide-react";
+import { memo } from "react";
 import { useServices } from "@/hooks/useDatabase";
 
 const iconMap: Record<string, any> = {
@@ -17,7 +18,7 @@ const fallbackServices = [
   { icon: "Camera", title: "Brand Videos", description: "End-to-end post-production support for brand storytelling and campaigns." },
 ];
 
-export const ServicesSection = () => {
+const ServicesSectionComponent = () => {
   const { data: dbServices = [] } = useServices();
 
   const services = dbServices.length > 0
@@ -57,3 +58,5 @@ export const ServicesSection = () => {
     </section>
   );
 };
+
+export const ServicesSection = memo(ServicesSectionComponent);

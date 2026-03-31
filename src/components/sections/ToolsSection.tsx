@@ -1,7 +1,8 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
+import { memo } from "react";
 import { useTools } from "@/hooks/useDatabase";
 
-export const ToolsSection = () => {
+const ToolsSectionComponent = () => {
   const { data: tools = [], isLoading } = useTools();
   
   // Sort by display order
@@ -55,6 +56,8 @@ export const ToolsSection = () => {
                             <img 
                               src={tool.icon_url} 
                               alt={tool.name}
+                              loading="lazy"
+                              decoding="async"
                               className="w-6 h-6 object-contain"
                             />
                           )}
@@ -88,3 +91,5 @@ export const ToolsSection = () => {
     </section>
   );
 };
+
+export const ToolsSection = memo(ToolsSectionComponent);

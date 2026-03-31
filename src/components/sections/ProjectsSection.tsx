@@ -1,19 +1,34 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { ExternalLink, Play } from "lucide-react";
 import { useProjects } from "@/hooks/useDatabase";
 
-export const ProjectsSection = () => {
+const ProjectsSectionComponent = () => {
   const { data: projects = [], isLoading } = useProjects();
   const [active, setActive] = useState("All");
 
-  // Get unique categories from projects
-  const categories = ["All", ...Array.from(new Set(projects.map(p => p.category).filter(Boolean)))];
+  // Memoize categories computation
+  const categories = useMemo(() => 
+    ["All", ...Array.from(new Set(projects.map(p => p.category).filter(Boolean)))],
+    [projects]
+  );
   
-  const filtered = active === "All" ? projects : projects.filter((p) => p.category === active);
+  // Memoize filtered projects
+  const filtered = useMemo(() => 
+    active === "All" ? projects : projects.filter((p) => p.category === active),
+    [active, projects]
+  );
   
-  // Sort by display order
-  const sorted = [...filtered].sort((a, b) => a.display_order - b.display_order);
+  // Memoize sorted projects
+  const sorted = useMemo(() => 
+    [...filtered].sort((a, b) => a.display_order - b.display_order),
+    [filtered]
+  );
+
+  // Memoize setActive for button clicks
+  const handleCategoryChange = useCallback((cat: string) => {
+    setActive(cat);
+  }, []);
 
   if (isLoading) {
     return (
@@ -46,7 +61,7 @@ export const ProjectsSection = () => {
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActive(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   active === cat
                     ? "bg-primary text-primary-foreground"
@@ -75,6 +90,8 @@ export const ProjectsSection = () => {
                           src={project.image_url} 
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          decoding="async"
                         />
                       )}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-background/40 backdrop-blur-sm">
@@ -125,3 +142,5 @@ export const ProjectsSection = () => {
     </section>
   );
 };
+
+export const ProjectsSection = memo(ProjectsSectionComponent);

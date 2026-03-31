@@ -2,9 +2,10 @@ import { AnimatedSection } from "@/components/AnimatedSection";
 import { useSettingsMap } from "@/hooks/useDatabase";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { memo } from "react";
 import editorPortraitFallback from "@/assets/editor-portrait.jpg";
 
-export const AboutSection = () => {
+const AboutSectionComponent = () => {
   const { settings } = useSettingsMap();
 
   const name = settings.editor_name || "Marcus Reed";
@@ -34,7 +35,7 @@ export const AboutSection = () => {
             </div>
             <div className="relative">
               <div className="aspect-[4/5] rounded-lg overflow-hidden relative">
-                <img src={portrait} alt={`${name} — Video Editor`} loading="lazy" width={800} height={1000} className="w-full h-full object-cover" />
+                <img src={portrait} alt={`${name} — Video Editor`} loading="lazy" decoding="async" width={800} height={1000} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
                   <div className="glass-card rounded-lg p-4 space-y-3">
@@ -66,3 +67,5 @@ export const AboutSection = () => {
     </section>
   );
 };
+
+export const AboutSection = memo(AboutSectionComponent);

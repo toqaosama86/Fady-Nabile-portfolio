@@ -1,39 +1,47 @@
 import { useSettings } from '@/hooks/useDatabase';
 import { useDesignSettings } from '@/hooks/useDesignSettings';
 import { Navbar } from "@/components/Navbar";
-import { HeroSection } from "@/components/sections/HeroSection";
-import { AboutSection } from "@/components/sections/AboutSection";
-import { StatsSection } from "@/components/sections/StatsSection";
-import { ShowreelSection } from "@/components/sections/ShowreelSection";
-import { ProjectsSection } from "@/components/sections/ProjectsSection";
-import { BrandsSection } from "@/components/sections/BrandsSection";
-import { ServicesSection } from "@/components/sections/ServicesSection";
-import { ExperienceSection } from "@/components/sections/ExperienceSection";
-import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
-import { ProcessSection } from "@/components/sections/ProcessSection";
-import { ToolsSection } from "@/components/sections/ToolsSection";
-import { ContactSection } from "@/components/sections/ContactSection";
-import { FooterSection } from "@/components/sections/FooterSection";
+import { Suspense, lazy, memo } from 'react';
+
+// Lazy load all sections to reduce initial bundle
+const HeroSection = lazy(() => import("@/components/sections/HeroSection").then(m => ({ default: m.HeroSection })));
+const AboutSection = lazy(() => import("@/components/sections/AboutSection").then(m => ({ default: m.AboutSection })));
+const StatsSection = lazy(() => import("@/components/sections/StatsSection").then(m => ({ default: m.StatsSection })));
+const ShowreelSection = lazy(() => import("@/components/sections/ShowreelSection").then(m => ({ default: m.ShowreelSection })));
+const ProjectsSection = lazy(() => import("@/components/sections/ProjectsSection").then(m => ({ default: m.ProjectsSection })));
+const BrandsSection = lazy(() => import("@/components/sections/BrandsSection").then(m => ({ default: m.BrandsSection })));
+const ServicesSection = lazy(() => import("@/components/sections/ServicesSection").then(m => ({ default: m.ServicesSection })));
+const ExperienceSection = lazy(() => import("@/components/sections/ExperienceSection").then(m => ({ default: m.ExperienceSection })));
+const TestimonialsSection = lazy(() => import("@/components/sections/TestimonialsSection").then(m => ({ default: m.TestimonialsSection })));
+const ProcessSection = lazy(() => import("@/components/sections/ProcessSection").then(m => ({ default: m.ProcessSection })));
+const ToolsSection = lazy(() => import("@/components/sections/ToolsSection").then(m => ({ default: m.ToolsSection })));
+const ContactSection = lazy(() => import("@/components/sections/ContactSection").then(m => ({ default: m.ContactSection })));
+const FooterSection = lazy(() => import("@/components/sections/FooterSection").then(m => ({ default: m.FooterSection })));
+
+// Loading skeleton for sections
+const SectionLoader = () => (
+  <div className="section-padding bg-background animate-pulse min-h-[400px]" />
+);
 
 // Map of section IDs to their components
 const sectionComponents: Record<string, React.ReactNode> = {
   navbar: <Navbar />,
-  hero: <HeroSection />,
-  about: <AboutSection />,
-  stats: <StatsSection />,
-  showreel: <ShowreelSection />,
-  projects: <ProjectsSection />,
-  brands: <BrandsSection />,
-  services: <ServicesSection />,
-  experience: <ExperienceSection />,
-  testimonials: <TestimonialsSection />,
-  process: <ProcessSection />,
-  tools: <ToolsSection />,
-  contact: <ContactSection />,
-  footer: <FooterSection />,
+  hero: <Suspense fallback={<SectionLoader />}><HeroSection /></Suspense>,
+  about: <Suspense fallback={<SectionLoader />}><AboutSection /></Suspense>,
+  stats: <Suspense fallback={<SectionLoader />}><StatsSection /></Suspense>,
+  showreel: <Suspense fallback={<SectionLoader />}><ShowreelSection /></Suspense>,
+  projects: <Suspense fallback={<SectionLoader />}><ProjectsSection /></Suspense>,
+  brands: <Suspense fallback={<SectionLoader />}><BrandsSection /></Suspense>,
+  services: <Suspense fallback={<SectionLoader />}><ServicesSection /></Suspense>,
+  experience: <Suspense fallback={<SectionLoader />}><ExperienceSection /></Suspense>,
+  testimonials: <Suspense fallback={<SectionLoader />}><TestimonialsSection /></Suspense>,
+  process: <Suspense fallback={<SectionLoader />}><ProcessSection /></Suspense>,
+  tools: <Suspense fallback={<SectionLoader />}><ToolsSection /></Suspense>,
+  contact: <Suspense fallback={<SectionLoader />}><ContactSection /></Suspense>,
+  footer: <Suspense fallback={<SectionLoader />}><FooterSection /></Suspense>,
 };
 
-const Index = () => {
+const Index = memo(() => {
   // Apply design settings (colors, fonts) from database
   useDesignSettings();
 
@@ -82,6 +90,8 @@ const Index = () => {
       ))}
     </main>
   );
-};
+});
+
+Index.displayName = "Index";
 
 export default Index;

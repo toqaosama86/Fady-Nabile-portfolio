@@ -18,4 +18,21 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
   },
+  build: {
+    target: "esnext",
+    minify: "esbuild",
+    reportCompressedSize: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Core dependencies
+          "vendor": ["react", "react-dom", "react-router-dom"],
+          "query": ["@tanstack/react-query"],
+          "supabase": ["@supabase/supabase-js"],
+          "animation": ["framer-motion"],
+          "utils": ["clsx", "class-variance-authority", "date-fns", "zod"],
+        },
+      },
+    },
+  },
 }));

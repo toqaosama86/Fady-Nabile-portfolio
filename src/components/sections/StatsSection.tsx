@@ -1,5 +1,5 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import { useSettingsMap } from "@/hooks/useDatabase";
 
 const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
@@ -32,7 +32,7 @@ const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
   return <span ref={ref}>{count}{suffix}</span>;
 };
 
-export const StatsSection = () => {
+const StatsSectionComponent = () => {
   const { settings } = useSettingsMap();
 
   const stats = [
@@ -61,3 +61,5 @@ export const StatsSection = () => {
     </section>
   );
 };
+
+export const StatsSection = memo(StatsSectionComponent);

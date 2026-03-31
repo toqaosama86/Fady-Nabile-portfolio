@@ -1,11 +1,11 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useSettingsMap, useCreateContactMessage } from "@/hooks/useDatabase";
 import { useToast } from "@/hooks/use-toast";
 
-export const ContactSection = () => {
+const ContactSectionComponent = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
   const { settings } = useSettingsMap();
@@ -92,3 +92,5 @@ export const ContactSection = () => {
     </section>
   );
 };
+
+export const ContactSection = memo(ContactSectionComponent);

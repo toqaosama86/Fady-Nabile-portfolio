@@ -19,7 +19,18 @@ import AdminToolsPage from "./pages/admin/Tools";
 import AdminMessagesPage from "./pages/admin/Messages";
 import AdminSettingsPage from "./pages/admin/Settings";
 
-const queryClient = new QueryClient();
+// Optimized QueryClient config with longer caching
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      retry: 1,
+      refetchOnWindowFocus: false, // Prevent refetch on window focus
+      refetchOnReconnect: "stale", // Only refetch if data is stale
+    },
+  },
+});
 
 const AppContent = () => {
   useFaviconLoader();

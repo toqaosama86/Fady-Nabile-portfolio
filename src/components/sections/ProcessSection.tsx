@@ -1,5 +1,6 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { Search, Lightbulb, Scissors, RefreshCw, Send } from "lucide-react";
+import { memo } from "react";
 
 const steps = [
   { icon: Search, title: "Discovery", description: "Understanding your vision, goals, audience, and brand requirements." },
@@ -9,7 +10,7 @@ const steps = [
   { icon: Send, title: "Delivery", description: "Final export in all required formats, optimized for every platform." },
 ];
 
-export const ProcessSection = () => {
+const ProcessSectionComponent = () => {
   return (
     <section className="section-padding bg-surface-overlay">
       <div className="max-w-6xl mx-auto">
@@ -44,3 +45,5 @@ export const ProcessSection = () => {
     </section>
   );
 };
+
+export const ProcessSection = memo(ProcessSectionComponent);

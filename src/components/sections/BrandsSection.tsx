@@ -1,7 +1,8 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { useBrands } from "@/hooks/useDatabase";
+import { memo } from "react";
 
-export const BrandsSection = () => {
+const BrandsSectionComponent = () => {
   const { data: brands = [], isLoading } = useBrands();
   
   // Sort by display order
@@ -39,6 +40,8 @@ export const BrandsSection = () => {
                     <img 
                       src={brand.logo_url}
                       alt={brand.name}
+                      loading="lazy"
+                      decoding="async"
                       className="max-h-full max-w-full object-contain"
                     />
                   ) : (
@@ -60,3 +63,5 @@ export const BrandsSection = () => {
     </section>
   );
 };
+
+export const BrandsSection = memo(BrandsSectionComponent);

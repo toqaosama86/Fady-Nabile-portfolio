@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Play, ArrowDown } from "lucide-react";
 import { useSettingsMap } from "@/hooks/useDatabase";
 import heroBgFallback from "@/assets/hero-bg.jpg";
+import { memo } from "react";
 
-export const HeroSection = () => {
+const HeroSectionComponent = () => {
   const { settings } = useSettingsMap();
 
   const tagline = settings.hero_tagline || "Professional Video Editor";
@@ -20,6 +21,8 @@ export const HeroSection = () => {
         width={1920}
         height={1080}
         className="absolute inset-0 w-full h-full object-cover opacity-40"
+        loading="eager"
+        decoding="async"
       />
       <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
 
@@ -55,3 +58,5 @@ export const HeroSection = () => {
     </section>
   );
 };
+
+export const HeroSection = memo(HeroSectionComponent);
