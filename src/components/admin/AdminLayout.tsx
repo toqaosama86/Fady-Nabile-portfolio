@@ -12,6 +12,7 @@ import {
   Hammer,
   Settings,
   LogOut,
+  Mail,
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -30,6 +31,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { path: '/admin/services', label: 'Services', icon: Wrench },
     { path: '/admin/experience', label: 'Experience', icon: Building2 },
     { path: '/admin/tools', label: 'Tools', icon: Hammer },
+    { path: '/admin/messages', label: 'Messages', icon: Mail },
     { path: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
@@ -39,13 +41,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside className="w-64 bg-card border-r border-border overflow-y-auto">
+      <aside className="w-64 bg-card border-r border-border overflow-y-auto flex flex-col">
         <div className="p-6">
           <h1 className="text-2xl font-bold text-foreground">Admin Panel</h1>
         </div>
 
-        <nav className="space-y-2 px-4">
+        <nav className="space-y-1 px-4 flex-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -53,42 +54,34 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
+                className={`flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors text-sm ${
                   isActive
                     ? 'bg-primary text-primary-foreground'
                     : 'text-foreground hover:bg-accent'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4" />
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="absolute bottom-6 left-4 right-4">
+        <div className="p-4 border-t border-border space-y-2">
           <Link
             to="/"
-            className="block text-sm text-muted-foreground hover:text-foreground mb-4 px-4 py-2 rounded-lg hover:bg-accent transition-colors"
+            className="block text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-lg hover:bg-accent transition-colors"
           >
             ← View Portfolio
           </Link>
-          <Button
-            onClick={handleSignOut}
-            variant="destructive"
-            className="w-40"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
+          <Button onClick={handleSignOut} variant="destructive" size="sm" className="w-full">
+            <LogOut className="w-4 h-4 mr-2" /> Sign Out
           </Button>
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          {children}
-        </div>
+        <div className="p-8">{children}</div>
       </main>
     </div>
   );

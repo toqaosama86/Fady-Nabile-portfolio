@@ -14,271 +14,297 @@ export type Database = {
   }
   public: {
     Tables: {
-      projects: {
+      admin_users: {
         Row: {
-          id: string
-          title: string
-          description: string
-          category: string | null
-          image_url: string | null
-          link_url: string | null
-          display_order: number
-          is_featured: boolean
           created_at: string
-          updated_at: string
+          id: string
+          is_active: boolean
+          user_id: string
         }
         Insert: {
-          id?: string
-          title: string
-          description: string
-          category?: string | null
-          image_url?: string | null
-          link_url?: string | null
-          display_order?: number
-          is_featured?: boolean
           created_at?: string
-          updated_at?: string
+          id?: string
+          is_active?: boolean
+          user_id: string
         }
         Update: {
-          id?: string
-          title?: string
-          description?: string
-          category?: string | null
-          image_url?: string | null
-          link_url?: string | null
-          display_order?: number
-          is_featured?: boolean
           created_at?: string
-          updated_at?: string
+          id?: string
+          is_active?: boolean
+          user_id?: string
         }
+        Relationships: []
       }
       brands: {
         Row: {
+          created_at: string
+          display_order: number
           id: string
-          name: string
-          logo_url: string | null
           link_url: string | null
-          display_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
+          logo_url: string | null
           name: string
-          logo_url?: string | null
-          link_url?: string | null
-          display_order?: number
+        }
+        Insert: {
           created_at?: string
-          updated_at?: string
+          display_order?: number
+          id?: string
+          link_url?: string | null
+          logo_url?: string | null
+          name: string
         }
         Update: {
+          created_at?: string
+          display_order?: number
           id?: string
+          link_url?: string | null
+          logo_url?: string | null
           name?: string
-          logo_url?: string | null
-          link_url?: string | null
-          display_order?: number
-          created_at?: string
-          updated_at?: string
         }
+        Relationships: []
       }
-      testimonials: {
+      contact_messages: {
         Row: {
-          id: string
-          author_name: string
-          author_title: string | null
-          author_image_url: string | null
-          content: string
-          rating: number
-          display_order: number
           created_at: string
-          updated_at: string
+          email: string
+          id: string
+          message: string
+          name: string
         }
         Insert: {
-          id?: string
-          author_name: string
-          author_title?: string | null
-          author_image_url?: string | null
-          content: string
-          rating?: number
-          display_order?: number
           created_at?: string
-          updated_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
         }
         Update: {
-          id?: string
-          author_name?: string
-          author_title?: string | null
-          author_image_url?: string | null
-          content?: string
-          rating?: number
-          display_order?: number
           created_at?: string
-          updated_at?: string
-        }
-      }
-      services: {
-        Row: {
-          id: string
-          title: string
-          description: string
-          icon: string | null
-          display_order: number
-          features: Json
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
+          email?: string
           id?: string
-          title: string
-          description: string
-          icon?: string | null
-          display_order?: number
-          features?: Json
-          created_at?: string
-          updated_at?: string
+          message?: string
+          name?: string
         }
-        Update: {
-          id?: string
-          title?: string
-          description?: string
-          icon?: string | null
-          display_order?: number
-          features?: Json
-          created_at?: string
-          updated_at?: string
-        }
+        Relationships: []
       }
       experience: {
         Row: {
-          id: string
           company_name: string
-          position: string
+          created_at: string
           description: string | null
-          start_date: string | null
+          display_order: number
           end_date: string | null
-          is_current: boolean
-          skills: Json
-          display_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          company_name: string
-          position: string
-          description?: string | null
-          start_date?: string | null
-          end_date?: string | null
-          is_current?: boolean
-          skills?: Json
-          display_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          company_name?: string
-          position?: string
-          description?: string | null
-          start_date?: string | null
-          end_date?: string | null
-          is_current?: boolean
-          skills?: Json
-          display_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      tools: {
-        Row: {
           id: string
-          name: string
-          category: string | null
-          icon_url: string | null
-          proficiency_level: number
-          years_of_experience: number | null
-          display_order: number
-          created_at: string
-          updated_at: string
+          is_current: boolean
+          position: string
+          skills: Json | null
+          start_date: string | null
         }
         Insert: {
-          id?: string
-          name: string
-          category?: string | null
-          icon_url?: string | null
-          proficiency_level?: number
-          years_of_experience?: number | null
-          display_order?: number
+          company_name: string
           created_at?: string
-          updated_at?: string
+          description?: string | null
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_current?: boolean
+          position: string
+          skills?: Json | null
+          start_date?: string | null
         }
         Update: {
-          id?: string
-          name?: string
-          category?: string | null
-          icon_url?: string | null
-          proficiency_level?: number
-          years_of_experience?: number | null
-          display_order?: number
+          company_name?: string
           created_at?: string
-          updated_at?: string
+          description?: string | null
+          display_order?: number
+          end_date?: string | null
+          id?: string
+          is_current?: boolean
+          position?: string
+          skills?: Json | null
+          start_date?: string | null
         }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          category: string | null
+          client_name: string | null
+          created_at: string
+          description: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_featured: boolean
+          link_url: string | null
+          results: string | null
+          services_provided: string | null
+          title: string
+          updated_at: string
+          video_url: string | null
+          year: string | null
+        }
+        Insert: {
+          category?: string | null
+          client_name?: string | null
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          link_url?: string | null
+          results?: string | null
+          services_provided?: string | null
+          title: string
+          updated_at?: string
+          video_url?: string | null
+          year?: string | null
+        }
+        Update: {
+          category?: string | null
+          client_name?: string | null
+          created_at?: string
+          description?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean
+          link_url?: string | null
+          results?: string | null
+          services_provided?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+          year?: string | null
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          created_at: string
+          description: string
+          display_order: number
+          features: Json | null
+          icon: string | null
+          id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          features?: Json | null
+          icon?: string | null
+          id?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          display_order?: number
+          features?: Json | null
+          icon?: string | null
+          id?: string
+          title?: string
+        }
+        Relationships: []
       }
       settings: {
         Row: {
+          created_at: string
           id: string
           key: string
-          value: Json | null
-          created_at: string
           updated_at: string
+          value: string | null
         }
         Insert: {
+          created_at?: string
           id?: string
           key: string
-          value?: Json | null
-          created_at?: string
           updated_at?: string
+          value?: string | null
         }
         Update: {
+          created_at?: string
           id?: string
           key?: string
-          value?: Json | null
-          created_at?: string
           updated_at?: string
+          value?: string | null
         }
+        Relationships: []
       }
-      admin_users: {
+      testimonials: {
         Row: {
-          id: string
-          user_id: string
-          role: string
-          is_active: boolean
+          author_image_url: string | null
+          author_name: string
+          author_title: string | null
+          content: string
           created_at: string
-          updated_at: string
+          display_order: number
+          id: string
+          rating: number
         }
         Insert: {
-          id?: string
-          user_id: string
-          role?: string
-          is_active?: boolean
+          author_image_url?: string | null
+          author_name: string
+          author_title?: string | null
+          content: string
           created_at?: string
-          updated_at?: string
+          display_order?: number
+          id?: string
+          rating?: number
         }
         Update: {
-          id?: string
-          user_id?: string
-          role?: string
-          is_active?: boolean
+          author_image_url?: string | null
+          author_name?: string
+          author_title?: string | null
+          content?: string
           created_at?: string
-          updated_at?: string
+          display_order?: number
+          id?: string
+          rating?: number
         }
+        Relationships: []
+      }
+      tools: {
+        Row: {
+          category: string | null
+          created_at: string
+          display_order: number
+          icon_url: string | null
+          id: string
+          name: string
+          proficiency_level: number
+          years_of_experience: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          display_order?: number
+          icon_url?: string | null
+          id?: string
+          name: string
+          proficiency_level?: number
+          years_of_experience?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          display_order?: number
+          icon_url?: string | null
+          id?: string
+          name?: string
+          proficiency_level?: number
+          years_of_experience?: number | null
+        }
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

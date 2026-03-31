@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Settings } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import { useSettingsMap } from "@/hooks/useDatabase";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -13,6 +13,12 @@ const navLinks = [
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { settings } = useSettingsMap();
+
+  const name = settings.editor_name || "Marcus Reed";
+  const nameParts = name.split(" ");
+  const firstName = nameParts[0] || name;
+  const lastName = nameParts.slice(1).join(" ");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -28,7 +34,7 @@ export const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-16 md:h-20">
         <a href="#" className="font-heading font-bold text-lg tracking-tight text-foreground">
-          MARCUS<span className="text-primary">REED</span>
+          {firstName.toUpperCase()}<span className="text-primary">{lastName ? lastName.toUpperCase() : ""}</span>
         </a>
 
         <div className="hidden md:flex items-center gap-8">
@@ -47,13 +53,6 @@ export const Navbar = () => {
           >
             Hire Me
           </a>
-          <Link
-            to="/admin"
-            className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300 p-2"
-            title="Admin Dashboard"
-          >
-            <Settings size={18} />
-          </Link>
         </div>
 
         <button
@@ -85,14 +84,6 @@ export const Navbar = () => {
             >
               Hire Me
             </a>
-            <Link
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className="text-sm font-heading font-semibold px-5 py-2.5 bg-secondary text-foreground rounded-md text-center hover:bg-secondary/90 transition-all flex items-center justify-center gap-2"
-            >
-              <Settings size={16} />
-              Admin
-            </Link>
           </div>
         </div>
       )}
