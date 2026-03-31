@@ -1,0 +1,43 @@
+# Vercel Ignore Configuration
+# Files that should not be deployed with the application
+
+# Test files
+test/
+*.test.ts
+*.test.tsx
+playwright.config.ts
+playwright-fixture.ts
+vitest.config.ts
+
+# Documentation
+*.md
+README.md
+VERCEL_DEPLOYMENT_GUIDE.md
+QUICK_START.md
+ADMIN_SETUP.md
+
+# Source control
+.git/
+.gitignore
+
+# Environment files (Vercel handles these via dashboard)
+.env
+.env.local
+.env.*.local
+
+# IDE/Build files
+.vscode/
+.idea/
+node_modules/
+.eslintignore
+eslint.config.js
+tsconfig.node.json
+
+# Database
+supabase/
+*.sql
+
+# Misc
+.DS_Store
+*.log
+*.pem
