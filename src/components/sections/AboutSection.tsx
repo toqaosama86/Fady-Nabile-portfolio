@@ -1,5 +1,7 @@
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { useSettingsMap } from "@/hooks/useDatabase";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 import editorPortraitFallback from "@/assets/editor-portrait.jpg";
 
 export const AboutSection = () => {
@@ -12,6 +14,7 @@ export const AboutSection = () => {
   const portrait = settings.about_portrait_image || editorPortraitFallback;
   const availability = settings.about_availability || "Currently Available";
   const availabilityNote = settings.about_availability_note || "Open for freelance & contract work";
+  const cvUrl = settings.site_cv_url;
 
   return (
     <section id="about" className="section-padding">
@@ -34,9 +37,24 @@ export const AboutSection = () => {
                 <img src={portrait} alt={`${name} — Video Editor`} loading="lazy" width={800} height={1000} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
-                  <div className="glass-card rounded-lg p-4">
-                    <p className="text-sm font-heading font-semibold text-foreground">{availability}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{availabilityNote}</p>
+                  <div className="glass-card rounded-lg p-4 space-y-3">
+                    <div>
+                      <p className="text-sm font-heading font-semibold text-foreground">{availability}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{availabilityNote}</p>
+                    </div>
+                    {cvUrl && (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="w-full"
+                      >
+                        <a href={cvUrl} download target="_blank" rel="noopener noreferrer">
+                          <Download className="w-4 h-4 mr-2" />
+                          Download CV
+                        </a>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

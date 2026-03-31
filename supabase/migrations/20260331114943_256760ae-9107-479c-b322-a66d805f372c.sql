@@ -185,6 +185,24 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('portfolio-assets', 'port
 
 -- Storage policies
 CREATE POLICY "Anyone can view portfolio assets" ON storage.objects FOR SELECT USING (bucket_id = 'portfolio-assets');
-CREATE POLICY "Admins can upload portfolio assets" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'portfolio-assets' AND public.is_admin(auth.uid()));
-CREATE POLICY "Admins can update portfolio assets" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'portfolio-assets' AND public.is_admin(auth.uid()));
-CREATE POLICY "Admins can delete portfolio assets" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'portfolio-assets' AND public.is_admin(auth.uid()));
+CREATE POLICY "Admins can upload portfolio assets" ON storage.objects FOR INSERT TO authenticated WITH CHECK (
+  bucket_id = 'portfolio-assets' 
+  AND EXISTS (
+    SELECT 1 FROM public.admin_users 
+    WHERE user_id = auth.uid() AND is_active = true
+  )
+);
+CREATE POLICY "Admins can update portfolio assets" ON storage.objects FOR UPDATE TO authenticated USING (
+  bucket_id = 'portfolio-assets' 
+  AND EXISTS (
+    SELECT 1 FROM public.admin_users 
+    WHERE user_id = auth.uid() AND is_active = true
+  )
+);
+CREATE POLICY "Admins can delete portfolio assets" ON storage.objects FOR DELETE TO authenticated USING (
+  bucket_id = 'portfolio-assets' 
+  AND EXISTS (
+    SELECT 1 FROM public.admin_users 
+    WHERE user_id = auth.uid() AND is_active = true
+  )
+);

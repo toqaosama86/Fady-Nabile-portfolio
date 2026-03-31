@@ -5,8 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUploadField } from './ImageUploadField';
 import { AdminLoadingSkeleton } from './AdminLoadingSkeleton';
+import { ColorPicker } from './ColorPicker';
+import { SectionReordering } from './SectionReordering';
+import { FaviconUpload } from './FaviconUpload';
+import { CVUpload } from './CVUpload';
 import { useToast } from '@/hooks/use-toast';
 import { Save } from 'lucide-react';
 
@@ -92,6 +98,25 @@ const settingsGroups = [
       { key: 'social_tiktok', label: 'TikTok URL', type: 'text', placeholder: 'https://tiktok.com/@...' },
     ],
   },
+  {
+    id: 'design',
+    label: 'Design & Layout',
+    fields: [
+      { key: 'color_primary', label: 'Primary Color', type: 'color', placeholder: '38 90% 55%' },
+      { key: 'color_accent', label: 'Accent Color', type: 'color', placeholder: '38 90% 55%' },
+      { key: 'color_gold', label: 'Gold Color', type: 'color', placeholder: '38 90% 55%' },
+      { key: 'color_gold_light', label: 'Gold Light', type: 'color', placeholder: '38 85% 70%' },
+      { key: 'color_gold_dark', label: 'Gold Dark', type: 'color', placeholder: '38 95% 40%' },
+      { key: 'color_background', label: 'Background Color', type: 'color', placeholder: '240 15% 5%' },
+      { key: 'color_surface', label: 'Surface Color', type: 'color', placeholder: '240 12% 8%' },
+      { key: 'color_surface_elevated', label: 'Surface Elevated', type: 'color', placeholder: '240 10% 12%' },
+      { key: 'color_secondary', label: 'Secondary Color', type: 'color', placeholder: '240 10% 12%' },
+      { key: 'color_muted', label: 'Muted Color', type: 'color', placeholder: '240 8% 14%' },
+      { key: 'font_family_heading', label: 'Heading Font', type: 'font-select', placeholder: 'Space Grotesk, sans-serif' },
+      { key: 'font_family_body', label: 'Body Font', type: 'font-select', placeholder: 'Inter, sans-serif' },
+      { key: 'section_order', label: 'Section Order', type: 'section-order' },
+    ],
+  },
 ];
 
 export const SettingsManager: React.FC = () => {
@@ -102,6 +127,36 @@ export const SettingsManager: React.FC = () => {
   // Build a local form state from the DB settings
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [dirty, setDirty] = useState<Set<string>>(new Set());
+  const [sectionList, setSectionList] = useState<any[]>([]);
+  const [savingGroup, setSavingGroup] = useState<string | null>(null);
+
+  // Available fonts
+  const availableFonts = [
+    { label: 'Space Grotesk', value: 'Space Grotesk, sans-serif' },
+    { label: 'Inter', value: 'Inter, sans-serif' },
+    { label: 'Poppins', value: 'Poppins, sans-serif' },
+    { label: 'Roboto', value: 'Roboto, sans-serif' },
+    { label: 'Montserrat', value: 'Montserrat, sans-serif' },
+    { label: 'Playfair Display', value: 'Playfair Display, serif' },
+    { label: 'Lora', value: 'Lora, serif' },
+  ];
+
+  // Default sections
+  const defaultSections = [
+    { id: 'hero', label: 'Hero', visible: true },
+    { id: 'about', label: 'About', visible: true },
+    { id: 'stats', label: 'Stats', visible: true },
+    { id: 'showreel', label: 'Showreel', visible: true },
+    { id: 'projects', label: 'Projects', visible: true },
+    { id: 'brands', label: 'Brands', visible: true },
+    { id: 'services', label: 'Services', visible: true },
+    { id: 'experience', label: 'Experience', visible: true },
+    { id: 'testimonials', label: 'Testimonials', visible: true },
+    { id: 'process', label: 'Process', visible: true },
+    { id: 'tools', label: 'Tools', visible: true },
+    { id: 'contact', label: 'Contact', visible: true },
+    { id: 'footer', label: 'Footer', visible: true },
+  ];
 
   useEffect(() => {
     const map: Record<string, string> = {};
@@ -109,6 +164,25 @@ export const SettingsManager: React.FC = () => {
       if (s.value !== null) map[s.key] = s.value;
     });
     setFormValues(map);
+    
+    // Parse section order
+    if (map.section_order) {
+      const sectionIds = map.section_order.split(',');
+      const parsed = defaultSections.map((sec) => ({
+        ...sec,
+        visible:
+          map[`section_${sec.id}_visible`] !== 'false',
+      }));
+      setSectionList(
+        parsed.sort(
+          (a, b) =>
+            sectionIds.indexOf(a.id) - sectionIds.indexOf(b.id)
+        )
+      );
+    } else {
+      setSectionList(defaultSections);
+    }
+    
     setDirty(new Set());
   }, [settings]);
 
@@ -117,28 +191,74 @@ export const SettingsManager: React.FC = () => {
     setDirty((prev) => new Set(prev).add(key));
   };
 
-  const handleSaveGroup = async (groupId: string) => {
-    const group = settingsGroups.find((g) => g.id === groupId);
-    if (!group) return;
+  const handleSectionReorder = (sections: any[]) => {
+    setSectionList(sections);
+    const sectionOrder = sections.map((s) => s.id).join(',');
+    handleChange('section_order', sectionOrder);
+    
+    // Mark visibility settings as dirty
+    sections.forEach((s) => {
+      const key = `section_${s.id}_visible`;
+      handleChange(key, s.visible ? 'true' : 'false');
+    });
+  };
 
-    const keysToSave = group.fields.map((f) => f.key).filter((k) => dirty.has(k));
+  const handleSaveGroup = async (groupId: string) => {
+    let keysToSave: string[] = [];
+    let groupLabel = '';
+
+    if (groupId === 'uploads') {
+      // Special handling for uploads
+      if (dirty.has('site_favicon_url')) keysToSave.push('site_favicon_url');
+      if (dirty.has('site_cv_url')) keysToSave.push('site_cv_url');
+      groupLabel = 'Uploads';
+    } else if (groupId === 'design') {
+      // Special handling for design - include section visibility settings
+      const group = settingsGroups.find((g) => g.id === groupId);
+      if (!group) return;
+      keysToSave = group.fields.map((f) => f.key).filter((k) => dirty.has(k));
+      
+      // Also include all visibility settings that are dirty
+      sectionList.forEach((section) => {
+        const visibilityKey = `section_${section.id}_visible`;
+        if (dirty.has(visibilityKey)) {
+          keysToSave.push(visibilityKey);
+        }
+      });
+      groupLabel = group.label;
+    } else {
+      const group = settingsGroups.find((g) => g.id === groupId);
+      if (!group) return;
+      keysToSave = group.fields.map((f) => f.key).filter((k) => dirty.has(k));
+      groupLabel = group.label;
+    }
+
     if (keysToSave.length === 0) {
       toast({ title: 'No changes', description: 'Nothing to save.' });
       return;
     }
 
+    setSavingGroup(groupId);
     try {
-      for (const key of keysToSave) {
-        await upsertSetting.mutateAsync({ key, value: formValues[key] || '' });
-      }
+      // Save all keys in parallel
+      await Promise.all(
+        keysToSave.map((key) =>
+          upsertSetting.mutateAsync({ key, value: formValues[key] || '' })
+        )
+      );
+      
       setDirty((prev) => {
         const next = new Set(prev);
         keysToSave.forEach((k) => next.delete(k));
         return next;
       });
-      toast({ title: 'Saved!', description: `${group.label} settings updated.` });
+      
+      toast({ title: '✓ Saved!', description: `${groupLabel} settings updated.`, variant: 'default' });
     } catch (error) {
+      console.error('Save error:', error);
       toast({ title: 'Error', description: 'Failed to save settings.', variant: 'destructive' });
+    } finally {
+      setSavingGroup(null);
     }
   };
 
@@ -158,6 +278,9 @@ export const SettingsManager: React.FC = () => {
               {group.label}
             </TabsTrigger>
           ))}
+          <TabsTrigger value="uploads" className="text-xs sm:text-sm">
+            📁 Uploads
+          </TabsTrigger>
         </TabsList>
 
         {settingsGroups.map((group) => (
@@ -168,33 +291,74 @@ export const SettingsManager: React.FC = () => {
                 <Button
                   size="sm"
                   onClick={() => handleSaveGroup(group.id)}
-                  disabled={!group.fields.some((f) => dirty.has(f.key))}
+                  disabled={!group.fields.some((f) => dirty.has(f.key)) || savingGroup === group.id}
+                  className={savingGroup === group.id ? 'opacity-75' : ''}
                 >
-                  <Save className="w-4 h-4 mr-2" /> Save {group.label}
+                  <Save className="w-4 h-4 mr-2" /> 
+                  {savingGroup === group.id ? 'Saving...' : `Save ${group.label}`}
                 </Button>
               </CardHeader>
               <CardContent className="space-y-6">
                 {group.fields.map((field) => (
                   <div key={field.key}>
-                    <label className="text-sm font-medium mb-1.5 block">{field.label}</label>
-                    {field.type === 'image' ? (
-                      <ImageUploadField
-                        currentImageUrl={formValues[field.key] || ''}
-                        onImageUrl={(url) => handleChange(field.key, url)}
+                    {field.type === 'section-order' ? (
+                      <SectionReordering
+                        sections={sectionList}
+                        onChange={handleSectionReorder}
                       />
+                    ) : field.type === 'color' ? (
+                      <ColorPicker
+                        label={field.label}
+                        value={formValues[field.key] || field.placeholder || ''}
+                        onChange={(value) => handleChange(field.key, value)}
+                        placeholder={field.placeholder}
+                      />
+                    ) : field.type === 'font-select' ? (
+                      <div>
+                        <Label className="text-sm font-medium mb-1.5 block">{field.label}</Label>
+                        <Select
+                          value={formValues[field.key] || field.placeholder || ''}
+                          onValueChange={(value) => handleChange(field.key, value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select font family..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableFonts.map((font) => (
+                              <SelectItem key={font.value} value={font.value}>
+                                {font.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ) : field.type === 'image' ? (
+                      <>
+                        <label className="text-sm font-medium mb-1.5 block">{field.label}</label>
+                        <ImageUploadField
+                          currentImageUrl={formValues[field.key] || ''}
+                          onImageUrl={(url) => handleChange(field.key, url)}
+                        />
+                      </>
                     ) : field.type === 'textarea' ? (
-                      <Textarea
-                        value={formValues[field.key] || ''}
-                        onChange={(e) => handleChange(field.key, e.target.value)}
-                        placeholder={field.placeholder}
-                        rows={3}
-                      />
+                      <>
+                        <label className="text-sm font-medium mb-1.5 block">{field.label}</label>
+                        <Textarea
+                          value={formValues[field.key] || ''}
+                          onChange={(e) => handleChange(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          rows={3}
+                        />
+                      </>
                     ) : (
-                      <Input
-                        value={formValues[field.key] || ''}
-                        onChange={(e) => handleChange(field.key, e.target.value)}
-                        placeholder={field.placeholder}
-                      />
+                      <>
+                        <label className="text-sm font-medium mb-1.5 block">{field.label}</label>
+                        <Input
+                          value={formValues[field.key] || ''}
+                          onChange={(e) => handleChange(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                        />
+                      </>
                     )}
                     {dirty.has(field.key) && (
                       <p className="text-xs text-primary mt-1">• Unsaved changes</p>
@@ -205,6 +369,45 @@ export const SettingsManager: React.FC = () => {
             </Card>
           </TabsContent>
         ))}
+
+        {/* Uploads Tab */}
+        <TabsContent value="uploads">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>📁 Uploads</CardTitle>
+              <Button
+                size="sm"
+                onClick={() => handleSaveGroup('uploads')}
+                disabled={!dirty.has('site_favicon_url') && !dirty.has('site_cv_url') || savingGroup === 'uploads'}
+                className={savingGroup === 'uploads' ? 'opacity-75' : ''}
+              >
+                <Save className="w-4 h-4 mr-2" /> 
+                {savingGroup === 'uploads' ? 'Saving...' : 'Save Uploads'}
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <div>
+                <FaviconUpload
+                  currentFaviconUrl={formValues['site_favicon_url'] || ''}
+                  onFaviconChange={(url) => handleChange('site_favicon_url', url)}
+                />
+                {dirty.has('site_favicon_url') && (
+                  <p className="text-xs text-primary mt-2">• Unsaved changes</p>
+                )}
+              </div>
+              
+              <div>
+                <CVUpload
+                  currentCvUrl={formValues['site_cv_url'] || ''}
+                  onCvChange={(url) => handleChange('site_cv_url', url)}
+                />
+                {dirty.has('site_cv_url') && (
+                  <p className="text-xs text-primary mt-2">• Unsaved changes</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );

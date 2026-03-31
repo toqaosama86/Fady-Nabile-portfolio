@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { useSettingsMap } from "@/hooks/useDatabase";
 
 const navLinks = [
@@ -37,7 +37,7 @@ export const Navbar = () => {
           {firstName.toUpperCase()}<span className="text-primary">{lastName ? lastName.toUpperCase() : ""}</span>
         </a>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-4">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -47,12 +47,24 @@ export const Navbar = () => {
               {link.label}
             </a>
           ))}
-          <a
-            href="#contact"
-            className="text-sm font-heading font-semibold px-5 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all duration-300"
-          >
-            Hire Me
-          </a>
+          <div className="flex items-center gap-3 ml-2">
+            {settings.site_cv_url && (
+              <a
+                href={settings.site_cv_url}
+                download
+                className="text-sm font-medium px-4 py-2 bg-secondary text-foreground rounded-md hover:bg-secondary/80 transition-all duration-300 flex items-center gap-2"
+              >
+                <Download size={16} />
+                CV
+              </a>
+            )}
+            <a
+              href="#contact"
+              className="text-sm font-heading font-semibold px-5 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-all duration-300"
+            >
+              Hire Me
+            </a>
+          </div>
         </div>
 
         <button
@@ -77,13 +89,26 @@ export const Navbar = () => {
                 {link.label}
               </a>
             ))}
-            <a
-              href="#contact"
-              onClick={() => setOpen(false)}
-              className="text-sm font-heading font-semibold px-5 py-2.5 bg-primary text-primary-foreground rounded-md text-center"
-            >
-              Hire Me
-            </a>
+            <div className="flex flex-col gap-2 pt-2">
+              {settings.site_cv_url && (
+                <a
+                  href={settings.site_cv_url}
+                  download
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium px-4 py-2.5 bg-secondary text-foreground rounded-md text-center flex items-center justify-center gap-2"
+                >
+                  <Download size={16} />
+                  Download CV
+                </a>
+              )}
+              <a
+                href="#contact"
+                onClick={() => setOpen(false)}
+                className="text-sm font-heading font-semibold px-5 py-2.5 bg-primary text-primary-foreground rounded-md text-center"
+              >
+                Hire Me
+              </a>
+            </div>
           </div>
         </div>
       )}

@@ -19,8 +19,8 @@ export const FooterSection = () => {
           <a href="#services" className="hover:text-primary transition-colors">Services</a>
           <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
         </div>
-        <p className="text-xs text-muted-foreground">
-          © {new Date().getFullYear()} {name}. All rights reserved.
+        <p className="text-xs text-muted-foreground" > 
+          © <a href="https://toqa-osama.vercel.app/" className="hover:text-primary transition-colors">Toqa Osama.</a> All rights reserved.
         </p>
       </div>
     </footer>
