@@ -26,10 +26,13 @@ export const AdminLogin: React.FC = () => {
     setIsLoading(true);
 
     try {
+      console.log('[LoginUI] Starting sign-in process...');
       await signIn(email, password);
       // Successfully logged in - context state updated immediately
+      console.log('[LoginUI] Sign-in successful, navigating to /admin');
       navigate('/admin', { replace: true });
     } catch (err: any) {
+      console.error('[LoginUI] Sign-in error caught:', err);
       let errorMsg = 'Invalid email or password';
       let details = '';
 
@@ -39,21 +42,21 @@ export const AdminLogin: React.FC = () => {
         
         // Catch specific error patterns
         if (err.message.includes('Could not verify admin access')) {
-          details = 'Your account exists but is not authorized as an admin. Contact the system administrator.';
+          details = '✓ Email & password correct, but admin check failed. Check console logs. Verify your user ID is in admin_users table.';
         } else if (err.message.includes('not authorized')) {
-          details = 'You do not have admin privileges. Only administrators can access this area.';
+          details = '✓ Email & password correct, but you do not have admin privileges. Only administrators can access this area.';
         } else if (err.message.includes('Wrong email')) {
-          details = 'The email or password you entered is incorrect.';
+          details = '✗ The email or password you entered is incorrect. Please verify and try again.';
         } else if (err.message.includes('network') || err.message.includes('fetch')) {
-          details = 'Network connection error. Please check your internet connection and try again.';
+          details = '✗ Network connection error. Check your internet and verify Supabase URL is correct.';
         } else if (err.message.includes('Supabase') || err.message.includes('RPC')) {
-          details = 'Server connection error. Environment variables may not be configured. Contact support.';
+          details = '✗ Server/Database error. Check Supabase project and verify environment variables in Vercel.';
         }
       } else if (typeof err === 'object' && err !== null) {
         // Handle network errors or other fetch errors
         if ('status' in err) {
           errorMsg = `Server Error (${err.status})`;
-          details = err.statusText || 'Unable to connect to the server';
+          details = err.statusText || 'Unable to connect to the server.';
         } else {
           errorMsg = err.toString?.() || 'An unexpected error occurred';
         }
@@ -129,12 +132,14 @@ export const AdminLogin: React.FC = () => {
                 )}
                 {showDetails && (
                   <div className="text-xs bg-muted p-2 rounded space-y-1">
-                    <p className="font-medium">Troubleshooting:</p>
+                    <p className="font-medium">🔍 Troubleshooting:</p>
                     <ul className="list-disc list-inside space-y-1">
+                      <li>Open browser console (F12) and check for [Auth] logs</li>
                       <li>Verify your email and password are correct</li>
-                      <li>Check if your admin account is active in the system</li>
-                      <li>Ensure environment variables are set on Vercel</li>
-                      <li>Try refreshing the page and login again</li>
+                      <li>Check admin_users table has your user in Supabase</li>
+                      <li>Verify Supabase URL Configuration has your domain</li>
+                      <li>Clear browser cache and try again</li>
+                      <li>Read SUPABASE_CONFIG.md for detailed setup</li>
                     </ul>
                   </div>
                 )}

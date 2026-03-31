@@ -150,42 +150,68 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    // Step 1: Authenticate with password
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      // Step 1: Authenticate with password
+      console.log('[Auth] Step 1: Attempting sign-in with email:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      throw new Error("Wrong email or password");
+      if (error) {
+        console.error('[Auth] Sign-in failed:', error);
+        throw new Error("Wrong email or password");
+      }
+
+      const authUser = data.user;
+      if (!authUser) {
+        console.error('[Auth] No user data returned from sign-in');
+        throw new Error("Login failed - no user data");
+      }
+
+      console.log('[Auth] Step 2: Sign-in successful, user ID:', authUser.id);
+      console.log('[Auth] Step 3: Verifying admin access...');
+
+      // Step 2: Verify admin access using secure RPC function
+      const { data: isAdminUser, error: adminError } = await supabase.rpc('is_admin', {
+        _user_id: authUser.id
+      });
+
+      console.log('[Auth] Admin verification result:', { isAdminUser, adminError });
+
+      if (adminError) {
+        console.error('[Auth] Admin check RPC error:', adminError);
+        // Sign out if admin check fails
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error('[Auth] Error signing out after failed admin check:', e);
+        }
+        throw new Error(`Could not verify admin access: ${adminError.message}`);
+      }
+
+      if (!isAdminUser) {
+        console.warn('[Auth] User is not an admin, signing out');
+        // Sign out the user since they're not an admin
+        try {
+          await supabase.auth.signOut();
+        } catch (e) {
+          console.error('[Auth] Error signing out non-admin user:', e);
+        }
+        throw new Error("You are not authorized to access admin");
+      }
+
+      // Step 3: Immediately update context state (don't wait for listener)
+      console.log('[Auth] Step 4: Updating session state...');
+      setSession(data.session);
+      setUser(authUser);
+      setIsAdmin(true);
+      setCachedAdminStatus(authUser.id, true);
+      console.log('[Auth] Sign-in complete!');
+    } catch (err) {
+      console.error('[Auth] Sign-in error:', err);
+      throw err;
     }
-
-    const authUser = data.user;
-    if (!authUser) {
-      throw new Error("Login failed");
-    }
-
-    // Step 2: Verify admin access using secure RPC function
-    const { data: isAdminUser, error: adminError } = await supabase.rpc('is_admin', {
-      _user_id: authUser.id
-    });
-
-    if (adminError) {
-      console.error('Admin verification error:', adminError);
-      throw new Error("Could not verify admin access");
-    }
-
-    if (!isAdminUser) {
-      // Sign out the user since they're not an admin
-      await supabase.auth.signOut();
-      throw new Error("You are not authorized to access admin");
-    }
-
-    // Step 3: Immediately update context state (don't wait for listener)
-    setSession(data.session);
-    setUser(authUser);
-    setIsAdmin(true);
-    setCachedAdminStatus(authUser.id, true);
   };
 
   const signOut = async () => {
