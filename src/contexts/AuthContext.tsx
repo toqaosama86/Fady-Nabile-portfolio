@@ -75,8 +75,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    // Step 1: Authenticate with password
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw new Error("Wrong email or password");
+    }
+
+    const user = data.user;
+    if (!user) {
+      throw new Error("Login failed");
+    }
+
+    // Step 2: Verify admin access
+    const { data: adminRow, error: adminError } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (adminError) {
+      throw new Error("Could not verify admin access");
+    }
+
+    if (!adminRow) {
+      throw new Error("You are not authorized to access admin");
+    }
   };
 
   const signOut = async () => {
