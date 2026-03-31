@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# Fady Portfolio
 
-TODO: Document your project here
+A modern portfolio website built with React, TypeScript, and Tailwind CSS. Features admin dashboard for managing projects, content, design settings, and portfolio customization.
